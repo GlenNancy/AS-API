@@ -1,0 +1,5 @@
+# Impedir que appsettings com credenciais subam para o Git
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
