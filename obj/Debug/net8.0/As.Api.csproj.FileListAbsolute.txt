@@ -170,3 +170,11 @@ C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\appsettings.js
 C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\As.Api.deps.json
 C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\As.Api.runtimeconfig.json
 C:\Users\USUARIO\Documents\AS\DEV\As.Api\obj\Debug\net8.0\As.Api.sourcelink.json
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Npgsql.dll
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
