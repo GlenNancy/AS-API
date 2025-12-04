@@ -67,6 +67,9 @@ builder.Services.AddScoped<IAccessService, AccessService>();
 
 var app = builder.Build();
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Urls.Clear();
+app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.UseSwagger();
 app.UseSwaggerUI();

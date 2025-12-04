@@ -163,3 +163,10 @@ C:\Users\USUARIO\Documents\AS\DEV\as.api\obj\Debug\net8.0\As.Api.pdb
 C:\Users\USUARIO\Documents\AS\DEV\as.api\obj\Debug\net8.0\As.Api.genruntimeconfig.cache
 C:\Users\USUARIO\Documents\AS\DEV\as.api\obj\Debug\net8.0\ref\As.Api.dll
 C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\appsettings.example.json
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\web.config
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\appsettings.Development.json
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\appsettings.example.json
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\appsettings.json
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\As.Api.deps.json
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\bin\Debug\net8.0\publish\As.Api.runtimeconfig.json
+C:\Users\USUARIO\Documents\AS\DEV\As.Api\obj\Debug\net8.0\As.Api.sourcelink.json
