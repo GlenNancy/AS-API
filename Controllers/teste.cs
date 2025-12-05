@@ -15,7 +15,8 @@ public class TestEmailController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Send()
     {
-        await _email.EnviarAcessoAsync("seuemail@gmail.com", "login_teste", "senha_teste");
+        await _email.EnviarAcessoAsync("glennancy024@gmail.com", "login_teste", "senha_teste");
+        await _email.EnviarAcessoAsync("glennancy24@gmail.com", "login_teste", "senha_teste");
         return Ok("Enviado");
     }
 }
