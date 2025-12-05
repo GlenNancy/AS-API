@@ -71,7 +71,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 // --- Email settings e DI (ok) ---
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+// builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddHttpClient<IEmailService, EmailService>();
 
 builder.Services.AddAuthorization();

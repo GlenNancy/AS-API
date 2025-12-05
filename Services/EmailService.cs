@@ -1,37 +1,32 @@
-using System.Net;
-using System.Net.Mail;
+using System.Net.Http.Json;
 using As.Api.Services;
-using As.Api.Settings;
-using Microsoft.Extensions.Options;
 
 public class EmailService : IEmailService
 {
-    private readonly EmailSettings _settings;
-
-    public EmailService(IOptions<EmailSettings> settings)
-    {
-        _settings = settings.Value;
-    }
+    private readonly HttpClient _httpClient;
 
     private const string RESEND_API_KEY = "re_RGQb2o2K_39yKr5Rc1bzu93oizNuyo7fa";
 
+    private const string EMAIL_FROM = "AS Plataforma <chatglennancy@gmail.com>";
+
+    public EmailService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+
+        _httpClient.BaseAddress = new Uri("https://api.resend.com/");
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {RESEND_API_KEY}");
+    }
+
     public async Task EnviarAcessoAsync(string destino, string login, string senha)
     {
-        var mail = new MailMessage()
-        {
-            From = new MailAddress(_settings.SenderEmail, _settings.SenderName),
-            Subject = "Seu acesso foi gerado!",
-            IsBodyHtml = true,
-            Body = $@"
+        var htmlBody = $@"
         <div style='font-family: Arial; padding: 20px; line-height:1.6; color:#111;'>
-            
             <h2 style='color:#2563eb;'>Seu acesso foi criado 🎉</h2>
 
             <p>Obrigado por responder à nossa avaliação.</p>
 
-            <p>
-                De forma geral, percebemos que muitos profissionais compartilham desafios como:
-            </p>
+            <p>De forma geral, percebemos que muitos profissionais compartilham desafios como:</p>
 
             <ul style='margin: 15px 0; padding-left: 20px;'>
                 <li>Comunicação pouco estratégica ou falta de clareza ao se posicionar.</li>
@@ -55,7 +50,7 @@ public class EmailService : IEmailService
 
             <h3 style='color:#2563eb;'>Suas credenciais de acesso</h3>
 
-            <div style='background:#f3f4f6; padding:15px; border-radius:8px;'>
+            <div style='background:#f3f4f6; padding:15px; border-radius:8px; border:1px solid #e5e7eb;'>
                 <p><strong>Login:</strong> {login}</p>
                 <p><strong>Senha:</strong> {senha}</p>
             </div>
@@ -65,17 +60,22 @@ public class EmailService : IEmailService
             <p style='margin-top:30px; color:#6b7280; font-size:14px;'>
                 AS - Gestão & Performance
             </p>
-        </div>"
-        };
+        </div>";
 
-        mail.To.Add(destino);
-
-        using var smtp = new SmtpClient("smtp.gmail.com", 587)
+        var requestBody = new
         {
-            Credentials = new NetworkCredential(_settings.SenderEmail, _settings.Password), // SENHA DE APP!
-            EnableSsl = true
+            from = EMAIL_FROM,
+            to = new[] { destino },
+            subject = "Seu acesso foi gerado!",
+            html = htmlBody
         };
 
-        await smtp.SendMailAsync(mail);
+        var response = await _httpClient.PostAsJsonAsync("v1/email", requestBody);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao enviar e-mail: {response.StatusCode} - {content}");
+        }
     }
 }
