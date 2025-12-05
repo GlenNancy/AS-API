@@ -33,7 +33,7 @@ namespace As.Api.Controllers
         {
             Id = e.Id,
             Titulo = e.Titulo,
-            Descricao = e.Descricao,
+            Descricao = e.Descricao, 
             DataCriacao = e.DataCriacao,
             ContaParaAcesso = e.ContaParaAcesso,
             Perguntas = e.Perguntas
@@ -41,6 +41,7 @@ namespace As.Api.Controllers
                 {
                     Id = pe.Id,
                     Texto = pe.Texto,
+                    TextoProvocativo = pe.TextoProvocativo
                 }).ToList()
         }).ToListAsync();
 
