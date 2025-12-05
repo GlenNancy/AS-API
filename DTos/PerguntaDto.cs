@@ -4,7 +4,8 @@ namespace As.Api.Dtos
     {
         public int Id { get; set; }
         public string Texto { get; set; }
-        public bool Obrigatoria { get; set; } 
+        public string TextoProvocativo { get; set; }
+        public bool Obrigatoria { get; set; }
 
         public List<RespostaDto> Respostas { get; set; }
     }
