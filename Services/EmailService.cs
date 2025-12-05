@@ -13,6 +13,8 @@ public class EmailService : IEmailService
         _settings = settings.Value;
     }
 
+    private const string RESEND_API_KEY = "re_RGQb2o2K_39yKr5Rc1bzu93oizNuyo7fa";
+
     public async Task EnviarAcessoAsync(string destino, string login, string senha)
     {
         var mail = new MailMessage()
