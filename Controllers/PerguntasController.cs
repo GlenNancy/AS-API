@@ -141,6 +141,34 @@ public class PerguntasController : ControllerBase
         return Ok(dtoList);
     }
 
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Update(int id, Pergunta_Enquete model)
+    {
+        var pergunta = await _db.Perguntas.FindAsync(id);
+    
+        if (pergunta == null)
+            return NotFound("Pergunta não encontrada.");
+    
+        // Se o usuário enviar um EnqueteId, valida se ela existe
+        if (model.EnqueteId != pergunta.EnqueteId)
+        {
+            var enquete = await _db.Enquetes.FindAsync(model.EnqueteId);
+            if (enquete == null)
+                return NotFound("A Enquete enviada não existe.");
+        }
+    
+        // Atualiza os campos (inclusive o novo TextoProvocativo)
+        pergunta.Texto = model.Texto;
+        pergunta.TextoProvocativo = model.TextoProvocativo;
+        pergunta.Obrigatoria = model.Obrigatoria;
+        pergunta.EnqueteId = model.EnqueteId;
+    
+        await _db.SaveChangesAsync();
+    
+        return Ok(new { message = "Pergunta atualizada com sucesso!", pergunta });
+    }
+
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
