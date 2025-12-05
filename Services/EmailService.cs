@@ -7,8 +7,8 @@ public class EmailService : IEmailService
 
     private const string RESEND_API_KEY = "re_RGQb2o2K_39yKr5Rc1bzu93oizNuyo7fa";
 
+    // remetente — pode usar onboarding@resend.dev pra teste
     private const string EMAIL_FROM = "AS Plataforma <onboarding@resend.dev>";
-
 
     public EmailService(HttpClient httpClient)
     {
@@ -27,23 +27,23 @@ public class EmailService : IEmailService
 
             <p>Obrigado por responder à nossa avaliação.</p>
 
-            <p>De forma geral, percebemos que muitos profissionais compartilham desafios como:</p>
+            <p>De forma geral, muitos profissionais compartilham desafios como:</p>
 
             <ul style='margin: 15px 0; padding-left: 20px;'>
                 <li>Comunicação pouco estratégica ou falta de clareza ao se posicionar.</li>
-                <li>Dificuldade de organização e gestão pessoal, reduzindo produtividade.</li>
-                <li>Baixa inteligência emocional, afetando foco, decisões e estabilidade.</li>
-                <li>Pouca preparação para o futuro — especialmente diante da IA e das novas exigências do mercado.</li>
-                <li>Inglês, habilidades técnicas e pensamento crítico abaixo do nível esperado.</li>
+                <li>Dificuldade de organização e gestão pessoal.</li>
+                <li>Baixa inteligência emocional.</li>
+                <li>Pouca preparação para o futuro, especialmente diante da IA.</li>
+                <li>Inglês, habilidades técnicas e pensamento crítico abaixo do esperado.</li>
             </ul>
 
             <p>
-                É comum que você tenha se identificado com alguns desses pontos — 
-                e tudo bem. A diferença está em quem escolhe evoluir antes que os desafios se tornem obstáculos maiores.
+                É comum se identificar com alguns desses pontos — e tudo bem. 
+                A diferença está em quem decide evoluir antes que os desafios se tornem obstáculos maiores.
             </p>
 
             <p>
-                A boa notícia é que todas essas competências podem ser desenvolvidas. <br>
+                A boa notícia é que essas competências podem ser desenvolvidas.
                 E é exatamente para isso que a AS existe.
             </p>
 
@@ -71,11 +71,23 @@ public class EmailService : IEmailService
             html = htmlBody
         };
 
-        var response = await _httpClient.PostAsJsonAsync("v1/email", requestBody);
+        HttpResponseMessage response;
+
+        try
+        {
+            // 👉 endpoint correto do Resend
+            response = await _httpClient.PostAsJsonAsync("emails", requestBody);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao chamar API do Resend: " + ex);
+            throw;
+        }
 
         if (!response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Erro Resend: {response.StatusCode} - {content}");
             throw new Exception($"Erro ao enviar e-mail: {response.StatusCode} - {content}");
         }
     }
