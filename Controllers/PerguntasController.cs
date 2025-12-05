@@ -119,6 +119,7 @@ public class PerguntasController : ControllerBase
         {
             Id = p.Id,
             Texto = p.Texto,
+            TextoProvocativo = p.TextoProvocativo,
             Obrigatoria = p.Obrigatoria,
 
             Respostas = p.Respostas.Select(r => new RespostaDto
