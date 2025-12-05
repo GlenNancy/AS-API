@@ -10,6 +10,8 @@ namespace As.Api.Models
         [Required]
         public string Texto { get; set; }
 
+        public string TextoProvocativo { get; set; }
+
         public bool Obrigatoria { get; set; } = false;
 
         [Required]
