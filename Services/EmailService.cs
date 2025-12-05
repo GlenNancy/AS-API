@@ -7,7 +7,8 @@ public class EmailService : IEmailService
 
     private const string RESEND_API_KEY = "re_RGQb2o2K_39yKr5Rc1bzu93oizNuyo7fa";
 
-    private const string EMAIL_FROM = "AS Plataforma <chatglennancy@gmail.com>";
+    private const string EMAIL_FROM = "AS Plataforma <onboarding@resend.dev>";
+
 
     public EmailService(HttpClient httpClient)
     {
