@@ -54,7 +54,7 @@ namespace As.Api.Controllers
             }
 
             // Verifica se já existe acesso
-            var acessoExistente = await _db.UserAcessos
+            /*var acessoExistente = await _db.UserAcessos
                 .FirstOrDefaultAsync(a => a.UserId == req.UserId);
 
             if (acessoExistente != null)
@@ -64,7 +64,7 @@ namespace As.Api.Controllers
                     mensagem = "Seu acesso já havia sido gerado anteriormente. Use o login abaixo. A senha não pode ser exibida novamente.",
                     login = acessoExistente.LoginGerado
                 });
-            }
+            }*/
 
             // 🔹 Define o login a partir do próprio usuário (ajuste o nome da propriedade de e-mail se for diferente)
             var login = !string.IsNullOrWhiteSpace(user.Email)
