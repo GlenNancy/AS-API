@@ -34,7 +34,7 @@ namespace As.Api.Controllers
             if (user == null)
                 return NotFound(new { mensagem = "Usuário não encontrado." });
 
-            // Verificar perguntas obrigatórias (igual estava)
+            // Verificar perguntas obrigatórias
             var obrigatorias = await _db.Perguntas
                 .Where(p => p.Obrigatoria)
                 .Include(p => p.Respostas)
@@ -53,8 +53,8 @@ namespace As.Api.Controllers
                 });
             }
 
-            // Verifica se já existe acesso
-            /*var acessoExistente = await _db.UserAcessos
+            // Se você quiser permitir SOMENTE 1 acesso por usuário, mantenha este bloco:
+            var acessoExistente = await _db.UserAcessos
                 .FirstOrDefaultAsync(a => a.UserId == req.UserId);
 
             if (acessoExistente != null)
@@ -64,15 +64,19 @@ namespace As.Api.Controllers
                     mensagem = "Seu acesso já havia sido gerado anteriormente. Use o login abaixo. A senha não pode ser exibida novamente.",
                     login = acessoExistente.LoginGerado
                 });
-            }*/
+            }
 
-            // 🔹 Define o login a partir do próprio usuário (ajuste o nome da propriedade de e-mail se for diferente)
-            var login = !string.IsNullOrWhiteSpace(user.Email)
-                ? user.Email.Trim().ToLowerInvariant()
-                : $"user{req.UserId}";
+            // 🔹 LOGIN ALEATÓRIO (tipo a senha), garantindo que não repita
+            string login;
+            do
+            {
+                login = "AS-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
+                // ex: AS-3F9A1C7B
+            }
+            while (await _db.UserAcessos.AnyAsync(a => a.LoginGerado == login));
 
-            // Gera senha aleatória e salva hash
-            string senha = Guid.NewGuid().ToString("N")[..8];
+            // 🔹 SENHA ALEATÓRIA
+            string senha = Guid.NewGuid().ToString("N")[..8]; // ex: 1a2b3c4d
             string hash = HashSenha(senha);
 
             var novo = new UserAcesso
@@ -86,7 +90,6 @@ namespace As.Api.Controllers
             _db.UserAcessos.Add(novo);
             await _db.SaveChangesAsync();
 
-            // ✅ NÃO envia e-mail, apenas retorna
             return Ok(new
             {
                 mensagem = "Acesso gerado com sucesso. Guarde esse login e senha, eles não serão enviados por e-mail.",
@@ -94,6 +97,7 @@ namespace As.Api.Controllers
                 senha
             });
         }
+
 
 
         // ============================================================
