@@ -21,8 +21,8 @@ namespace As.Api.Controllers
         public class GerarAcessoRequest
         {
             public int UserId { get; set; }
-            public string Email { get; set; }
         }
+
 
         // ============================================================
         // 🟢 1. GERAR ACESSO (SEM ENVIAR E-MAIL, SÓ RETORNANDO NA TELA)
@@ -34,10 +34,7 @@ namespace As.Api.Controllers
             if (user == null)
                 return NotFound(new { mensagem = "Usuário não encontrado." });
 
-            if (string.IsNullOrWhiteSpace(req.Email))
-                return BadRequest(new { mensagem = "O campo 'email' é obrigatório." });
-
-            // Verificar se respondeu todas obrigatórias
+            // Verificar perguntas obrigatórias (igual estava)
             var obrigatorias = await _db.Perguntas
                 .Where(p => p.Obrigatoria)
                 .Include(p => p.Respostas)
@@ -69,8 +66,10 @@ namespace As.Api.Controllers
                 });
             }
 
-            // Login = próprio e-mail do usuário
-            string login = req.Email.Trim().ToLowerInvariant();
+            // 🔹 Define o login a partir do próprio usuário (ajuste o nome da propriedade de e-mail se for diferente)
+            var login = !string.IsNullOrWhiteSpace(user.Email)
+                ? user.Email.Trim().ToLowerInvariant()
+                : $"user{req.UserId}";
 
             // Gera senha aleatória e salva hash
             string senha = Guid.NewGuid().ToString("N")[..8];
@@ -87,7 +86,7 @@ namespace As.Api.Controllers
             _db.UserAcessos.Add(novo);
             await _db.SaveChangesAsync();
 
-            // NÃO envia e-mail – apenas retorna para o front exibir
+            // ✅ NÃO envia e-mail, apenas retorna
             return Ok(new
             {
                 mensagem = "Acesso gerado com sucesso. Guarde esse login e senha, eles não serão enviados por e-mail.",
@@ -95,6 +94,7 @@ namespace As.Api.Controllers
                 senha
             });
         }
+
 
         // ============================================================
         // 🟡 2. CONSULTAR ACESSO DO USUÁRIO
