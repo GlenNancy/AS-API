@@ -1,6 +1,5 @@
 using As.Api.Data;
 using As.Api.Models;
-using As.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -13,12 +12,10 @@ namespace As.Api.Controllers
     public class UserAcessosController : ControllerBase
     {
         private readonly AppDbContext _db;
-        private readonly IEmailService _emailService;
 
-        public UserAcessosController(AppDbContext db, IEmailService emailService)
+        public UserAcessosController(AppDbContext db)
         {
             _db = db;
-            _emailService = emailService;
         }
 
         public class GerarAcessoRequest
@@ -28,18 +25,19 @@ namespace As.Api.Controllers
         }
 
         // ============================================================
-        // 🟢 1. GERAR ACESSO + ENVIAR EMAIL
+        // 🟢 1. GERAR ACESSO (SEM ENVIAR E-MAIL, SÓ RETORNANDO NA TELA)
         // ============================================================
         [HttpPost("gerar")]
         public async Task<IActionResult> GerarAcesso([FromBody] GerarAcessoRequest req)
         {
             var user = await _db.Users.FindAsync(req.UserId);
             if (user == null)
-                return NotFound("Usuário não encontrado.");
+                return NotFound(new { mensagem = "Usuário não encontrado." });
 
             if (string.IsNullOrWhiteSpace(req.Email))
-                return BadRequest("O campo 'email' é obrigatório.");
+                return BadRequest(new { mensagem = "O campo 'email' é obrigatório." });
 
+            // Verificar se respondeu todas obrigatórias
             var obrigatorias = await _db.Perguntas
                 .Where(p => p.Obrigatoria)
                 .Include(p => p.Respostas)
@@ -58,6 +56,7 @@ namespace As.Api.Controllers
                 });
             }
 
+            // Verifica se já existe acesso
             var acessoExistente = await _db.UserAcessos
                 .FirstOrDefaultAsync(a => a.UserId == req.UserId);
 
@@ -65,12 +64,15 @@ namespace As.Api.Controllers
             {
                 return Ok(new
                 {
-                    mensagem = "Acesso já existe.",
+                    mensagem = "Seu acesso já havia sido gerado anteriormente. Use o login abaixo. A senha não pode ser exibida novamente.",
                     login = acessoExistente.LoginGerado
                 });
             }
 
-            string login = $"user{req.UserId}";
+            // Login = próprio e-mail do usuário
+            string login = req.Email.Trim().ToLowerInvariant();
+
+            // Gera senha aleatória e salva hash
             string senha = Guid.NewGuid().ToString("N")[..8];
             string hash = HashSenha(senha);
 
@@ -85,12 +87,10 @@ namespace As.Api.Controllers
             _db.UserAcessos.Add(novo);
             await _db.SaveChangesAsync();
 
-            // 🔥 Enviar email para o usuário
-            await _emailService.EnviarAcessoAsync(req.Email, login, senha);
-
+            // NÃO envia e-mail – apenas retorna para o front exibir
             return Ok(new
             {
-                mensagem = "Acesso gerado e enviado por e-mail.",
+                mensagem = "Acesso gerado com sucesso. Guarde esse login e senha, eles não serão enviados por e-mail.",
                 login,
                 senha
             });
